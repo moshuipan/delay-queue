@@ -61,9 +61,10 @@ func Pop(topics []string) (*Job, error) {
 		return job, err
 	}
 
-	// 消息不存在, 可能已被删除
+	// 消息不存在, 可能已被删除,重新获取
 	if job == nil {
-		return nil, nil
+		return Pop(topics)
+		// return nil, nil
 	}
 
 	timestamp := time.Now().Unix() + job.TTR
