@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/ouqiang/delay-queue/config"
+	"github.com/moshuipan/delay-queue/config"
 )
 
 // 添加JobId到队列中
