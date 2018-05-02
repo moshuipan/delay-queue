@@ -18,34 +18,35 @@ func pushToReadyQueue(queueName string, jobId string) error {
 
 // 从队列中阻塞获取JobId
 func blockPopFromReadyQueue(queues []string, timeout int) (string, error) {
-	var args []interface{}
-	for _, queue := range queues {
-		queue = fmt.Sprintf(config.Setting.QueueName, queue)
-		args = append(args, queue)
-	}
+	// 	var args []interface{}
+	// 	args = append(args, queue)
+	// }
 	// args = append(args, timeout)
 	var value interface{}
 	var err error
 	t := time.Now().Unix() + int64(timeout)
 	for time.Now().Unix() < t {
-		value, err = execRedisCommand("LPOP", args...) //使用codis,去掉blpop命令
-		if err != nil {
-			return "", err
-		}
-		if value != nil {
-			break
+		for _, queue := range queues {
+			queue = fmt.Sprintf(config.Setting.QueueName, queue)
+			value, err = execRedisCommand("LPOP", queue) //使用codis,去掉blpop命令
+			if err != nil {
+				return "", err
+			}
+			if value != nil {
+				break
+			}
 		}
 		sleepTimeInterval()
 	}
 	if value == nil {
 		return "", nil
 	}
-	var valueBytes []interface{}
-	valueBytes = value.([]interface{})
-	if len(valueBytes) == 0 {
-		return "", nil
-	}
-	element := string(valueBytes[1].([]byte))
+	// var valueBytes []interface{}
+	// valueBytes = value.([]interface{})
+	// if len(valueBytes) == 0 {
+	// 	return "", nil
+	// }
+	element := string(value.([]byte))
 
 	return element, nil
 }
