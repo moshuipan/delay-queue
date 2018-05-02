@@ -25,6 +25,7 @@ func blockPopFromReadyQueue(queues []string, timeout int) (string, error) {
 	var value interface{}
 	var err error
 	t := time.Now().Unix() + int64(timeout)
+A:
 	for time.Now().Unix() < t {
 		for _, queue := range queues {
 			queue = fmt.Sprintf(config.Setting.QueueName, queue)
@@ -33,7 +34,7 @@ func blockPopFromReadyQueue(queues []string, timeout int) (string, error) {
 				return "", err
 			}
 			if value != nil {
-				break
+				break A
 			}
 		}
 		sleepTimeInterval()
