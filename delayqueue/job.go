@@ -1,6 +1,7 @@
 package delayqueue
 
 import (
+	"github.com/moshuipan/delay-queue/config"
 	"github.com/vmihailenco/msgpack"
 )
 
@@ -15,7 +16,7 @@ type Job struct {
 
 // 获取Job
 func getJob(key string) (*Job, error) {
-	value, err := execRedisCommand("GET", key)
+	value, err := execRedisCommand("GET", config.DefaultKeyName+key)
 	if err != nil {
 		return nil, err
 	}
@@ -39,14 +40,14 @@ func putJob(key string, job Job) error {
 	if err != nil {
 		return err
 	}
-	_, err = execRedisCommand("SET", key, value)
+	_, err = execRedisCommand("SET", config.DefaultKeyName+key, value)
 
 	return err
 }
 
 // 删除Job
 func removeJob(key string) error {
-	_, err := execRedisCommand("DEL", key)
+	_, err := execRedisCommand("DEL", config.DefaultKeyName+key)
 
 	return err
 }
