@@ -61,20 +61,23 @@ func Pop(topics []string) (*Job, error) {
 		return job, err
 	}
 
-	// 消息不存在, 可能已被删除,重新获取
+	// 消息不存在, 可能已被删除
 	if job == nil {
-		return Pop(topics)
-		// return nil, nil
+		return nil, nil
 	}
 
 	timestamp := time.Now().Unix() + job.TTR
-	err = pushToBucket(<-bucketNameChan, timestamp, job.Id)
+	err = pushToBucket(fmt.Sprintf(config.Setting.BucketName, 1), timestamp, job.Id) //待确认的消息放入bucket1
 
 	return job, err
 }
 
 // Remove 删除Job
 func Remove(jobId string) error {
+	err := removeFromBucket(fmt.Sprintf(config.Setting.BucketName, 1), jobId)
+	if err != nil {
+		return err
+	}
 	return removeJob(jobId)
 }
 
