@@ -52,6 +52,31 @@ A:
 	return element, nil
 }
 
+// 从队列中阻塞获取JobId,blpop
+func blPopFromReadyQueue(queues []string, timeout int) (string, error) {
+	var args []interface{}
+	for _, queue := range queues {
+		queue = fmt.Sprintf(config.Setting.QueueName, queue)
+		args = append(args, queue)
+	}
+	args = append(args, timeout)
+	value, err := execRedisCommand("BLPOP", args...)
+	if err != nil {
+		return "", err
+	}
+	if value == nil {
+		return "", nil
+	}
+	var valueBytes []interface{}
+	valueBytes = value.([]interface{})
+	if len(valueBytes) == 0 {
+		return "", nil
+	}
+	element := string(valueBytes[1].([]byte))
+
+	return element, nil
+}
+
 // 请求的最小时间间隔(毫秒)
 var RetryMinTimeInterval int64 = 5
 
