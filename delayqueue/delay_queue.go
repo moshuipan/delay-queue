@@ -156,7 +156,7 @@ func tickHandler(t time.Time, bucketName string) {
 		// 延迟时间小于等于当前时间, 取出Job元信息并放入ready queue
 		job, err := getJob(bucketItem.jobId)
 		if err != nil {
-			log.Printf("获取Job元信息失败#bucket-%s#%s", bucketName, err.Error())
+			log.Printf("获取Job元信息失败#bucket-%s#%s#jobid:%s", bucketName, err.Error(), bucketItem.jobId)
 			continue
 		}
 
